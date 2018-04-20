@@ -1,6 +1,6 @@
 """ This allows people to create/view posts"""
 from pprint import pprint
-from flask import Flask
+from flask import Flask, jsonify
 from flask_restful import Resource, Api
 from pymongo import MongoClient
 import configparser
@@ -43,10 +43,12 @@ class Feed(Resource):
 
         #status = str(serverStatusResult)
         status = 'alls good'
-        return { 
+        response = jsonify({ 
             'USER': user,
             'result_count': p,
-        }
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
 
 api.add_resource(Feed, '/<user>')
 
