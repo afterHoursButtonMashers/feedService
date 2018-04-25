@@ -102,3 +102,4 @@ ENV/
 # mypy
 .mypy_cache/
 /.vs/slnx.sqlite
+/.vs/feedService/v15/.suo

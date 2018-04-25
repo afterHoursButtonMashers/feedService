@@ -34,8 +34,8 @@ class Feed(Resource):
     """Get posts from a user"""
 
     def get(self, user):
-        db = DB_CLIENT.test
-        posts  = db.testcollection.find({"User": user})
+        db = DB_CLIENT.feed
+        posts  = db.post.find({"User": user})
 
         p = []
         for i in posts:
@@ -44,8 +44,8 @@ class Feed(Resource):
         #status = str(serverStatusResult)
         status = 'alls good'
         response = jsonify({ 
-            'USER': user,
-            'result_count': p,
+            'user': user,
+            'result': p,
         })
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
@@ -65,5 +65,5 @@ if __name__ == '__main__':
         #post_id = db.testcollection.insert_one(post).inserted_id
         #print(post_id, 'this is the tihgn')
 
-
-    app.run(debug=True)
+    APP_PORT = config['Server']['port']
+    app.run(debug=True,port=int(APP_PORT))
