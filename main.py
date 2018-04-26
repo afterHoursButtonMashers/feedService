@@ -29,20 +29,17 @@ class Post:
         return json.dumps(self)
 
 
-
 class Feed(Resource):
     """Get posts from a user"""
 
     def get(self, user):
         db = DB_CLIENT.feed
-        posts  = db.post.find({"User": user})
+        posts  = db.post.find({"user": user})
 
         p = []
         for i in posts:
-            p.append({'user': i['User'], 'date': i['date'], 'body': i['body']})
+            p.append({'user': i['user'], 'date': i['date'], 'body': i['body']})
 
-        #status = str(serverStatusResult)
-        status = 'alls good'
         response = jsonify({ 
             'user': user,
             'result': p,
@@ -50,7 +47,7 @@ class Feed(Resource):
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
-api.add_resource(Feed, '/<user>')
+api.add_resource(Feed, '/feed/<user>')
 
 if __name__ == '__main__':
     config = configparser.ConfigParser()
@@ -60,10 +57,6 @@ if __name__ == '__main__':
     DB_URL = config['Database']['url']
     DB_PORT = config['Database']['port']
     DB_CLIENT = MongoClient(DB_URL, int(DB_PORT)) 
-
-#post = {'User': 'bob', 'date': 'today', 'body': 'this is a post'}
-        #post_id = db.testcollection.insert_one(post).inserted_id
-        #print(post_id, 'this is the tihgn')
 
     APP_PORT = config['Server']['port']
     app.run(debug=True,port=int(APP_PORT))
