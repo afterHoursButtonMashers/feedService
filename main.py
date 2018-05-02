@@ -64,8 +64,8 @@ class Post(Resource):
             "body": body,
             "user": user
             }
-        db.post.insert_one(new_post)
-        return new_post
+        """db.post.insert_one(new_post).inserted_id"""
+        return "Successfully inserted"
 
 api.add_resource(Post, '/post/<user>', '/post')
 
