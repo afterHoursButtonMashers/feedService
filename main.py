@@ -1,8 +1,9 @@
 """ This allows people to create/view posts"""
 from pprint import pprint
 from flask import Flask, jsonify
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 from pymongo import MongoClient
+from bson  import json_util
 import configparser
 import dateutil
 import json
@@ -10,12 +11,17 @@ import json
 app = Flask(__name__)
 api = Api(app)
 
+parser = reqparse.RequestParser()
+parser.add_argument('body', type=str)
+parser.add_argument('date', type=str)
+parser.add_argument('user', type=str)
+
 #GLOBALS
 DB_URL = ''
 DB_PORT = ''
 DB_CLIENT = MongoClient()
 
-class Post:
+class Comment:
     """Post objects we want to show off"""
     user = ''
     date = ''
@@ -29,7 +35,7 @@ class Post:
         return json.dumps(self)
 
 
-class Feed(Resource):
+class Post(Resource):
     """Get posts from a user"""
 
     def get(self, user):
@@ -47,16 +53,31 @@ class Feed(Resource):
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
-api.add_resource(Feed, '/feed/<user>')
+    def post(self):
+        db = DB_CLIENT.feed
+        args = parser.parse_args()
+        date = args["date"]
+        body = args["body"]
+        user = args["user"]
+        new_post = {
+            "date": date,
+            "body": body,
+            "user": user
+            }
+        """db.post.insert_one(new_post).inserted_id"""
+        return "Successfully inserted"
+
+api.add_resource(Post, '/post/<user>', '/post')
 
 if __name__ == '__main__':
     config = configparser.ConfigParser()
-    config.sections()
     config.sections()
     config.read('config.ini')
     DB_URL = config['Database']['url']
     DB_PORT = config['Database']['port']
     DB_CLIENT = MongoClient(DB_URL, int(DB_PORT)) 
 
+    APP_HOST = config['Server']['host']
     APP_PORT = config['Server']['port']
-    app.run(debug=True,port=int(APP_PORT))
+    APP_DEBUG = config['Server']['debug']
+    app.run(debug=APP_DEBUG,host=APP_HOST,port=int(APP_PORT))
