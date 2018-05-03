@@ -13,3 +13,7 @@ def test_answer():
 def test_bad_answer():
     """test other stuff"""
     assert inc(3) != 5
+
+def test_other_bad_thing():
+    """moar tests"""
+    assert inc(1) != 5
