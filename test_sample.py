@@ -6,7 +6,7 @@ def inc(var_x):
 
 
 def test_answer():
-    """Simple unit test"""
+    """test good value"""
     assert inc(4) == 5
 
 
